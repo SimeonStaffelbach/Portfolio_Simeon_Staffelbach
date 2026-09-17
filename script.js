@@ -117,9 +117,15 @@ const projectTabs = document.querySelectorAll('.project-tab');
 projectTabs.forEach((tab) => {
   tab.addEventListener('click', () => {
     const projects = [...projectGrid.children];
-    const direction = tab.dataset.sort === 'oldest' ? 1 : -1;
-
-    projects.sort((first, second) => direction * (Number(first.dataset.order) - Number(second.dataset.order)));
+    if (tab.dataset.sort === 'mix') {
+      for (let index = projects.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [projects[index], projects[swapIndex]] = [projects[swapIndex], projects[index]];
+      }
+    } else {
+      const direction = tab.dataset.sort === 'oldest' ? 1 : -1;
+      projects.sort((first, second) => direction * (Number(first.dataset.order) - Number(second.dataset.order)));
+    }
     projectGrid.classList.remove('is-sorting');
     projects.forEach((project) => projectGrid.appendChild(project));
     requestAnimationFrame(() => projectGrid.classList.add('is-sorting'));
@@ -177,6 +183,21 @@ if (methodVisual && window.matchMedia('(pointer: fine)').matches) {
   methodVisual.addEventListener('pointerleave', () => {
     methodVisual.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
   });
+}
+
+const comparisonRange = document.querySelector('.comparison-range');
+const comparisonItems = document.querySelectorAll('.comparison-item');
+const comparisonValue = document.querySelector('.comparison-range-value');
+
+if (comparisonRange && comparisonItems.length) {
+  const updateComparison = () => {
+    const position = `${comparisonRange.value}%`;
+    comparisonItems.forEach((item) => item.style.setProperty('--compare-position', position));
+    if (comparisonValue) comparisonValue.textContent = position;
+  };
+
+  comparisonRange.addEventListener('input', updateComparison);
+  updateComparison();
 }
 
 document.querySelectorAll('.gallery-photo img').forEach((image) => {
