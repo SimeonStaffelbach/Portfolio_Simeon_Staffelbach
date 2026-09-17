@@ -30,6 +30,7 @@
 body{animation:page-arrive .8s cubic-bezier(.2,.7,.2,1) both}
 @keyframes page-arrive{from{opacity:0}to{opacity:1}}
 .scroll-progress{position:fixed;z-index:30;top:0;left:0;width:100%;height:3px;background:var(--coral);transform:scaleX(0);transform-origin:left center;pointer-events:none}
+.hero-art,.project-visual,.method-visual{translate:0 var(--scroll-lift,0px);rotate:var(--scroll-tilt,0deg);will-change:translate,rotate}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.75,.25,1)}
 .reveal.visible{opacity:1;transform:none}
 .reveal-delay{transition-delay:.16s}

@@ -1,5 +1,10 @@
 const revealItems = document.querySelectorAll('.reveal');
 
+document.querySelectorAll('video[data-preview-speed]').forEach((video) => {
+  const speed = Number(video.dataset.previewSpeed);
+  if (Number.isFinite(speed) && speed > 0) video.playbackRate = speed;
+});
+
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
@@ -15,6 +20,27 @@ const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 const scrollProgress = document.createElement('div');
 scrollProgress.className = 'scroll-progress';
 document.body.prepend(scrollProgress);
+
+const scrollScenes = document.querySelectorAll('.hero-art, .project-visual, .method-visual');
+let sceneFrame;
+const updateScrollScenes = () => {
+  if (motionReduced || sceneFrame) return;
+  sceneFrame = requestAnimationFrame(() => {
+    const viewportCenter = window.innerHeight * 0.52;
+    scrollScenes.forEach((scene) => {
+      const bounds = scene.getBoundingClientRect();
+      const distance = (bounds.top + bounds.height / 2 - viewportCenter) / window.innerHeight;
+      const depth = Math.max(-1, Math.min(1, distance));
+      scene.style.setProperty('--scroll-lift', `${depth * -22}px`);
+      scene.style.setProperty('--scroll-tilt', `${depth * 1.8}deg`);
+    });
+    sceneFrame = null;
+  });
+};
+window.addEventListener('scroll', updateScrollScenes, { passive: true });
+window.addEventListener('resize', updateScrollScenes, { passive: true });
+document.addEventListener('visibilitychange', updateScrollScenes);
+updateScrollScenes();
 
 let progressFrame;
 const updateScrollProgress = () => {
