@@ -111,6 +111,20 @@ document.querySelectorAll('.contact-footer span:last-child').forEach((backLink) 
   backLink.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 });
 
+const contactForm = document.querySelector('#contact-form');
+if (contactForm) {
+  contactForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(contactForm);
+    const name = String(formData.get('name') || '').trim();
+    const email = String(formData.get('email') || '').trim();
+    const message = String(formData.get('message') || '').trim();
+    const subject = `Portfolio-Anfrage von ${name}`;
+    const body = `Name: ${name}\nE-Mail: ${email}\n\n${message}`;
+    window.location.href = `mailto:simi.staffbach@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+}
+
 const projectGrid = document.querySelector('.project-grid');
 const projectTabs = document.querySelectorAll('.project-tab');
 
